@@ -1,10 +1,109 @@
+import {Injectable} from "@angular/core";
+import {TranslateService} from "@ngx-translate/core";
+import {AuthService} from "./auth.service";
+import {FeedbackService} from "./feedback.service";
+import {AnalyticsModulesService} from "./analytics-modules.service";
+import {SessionService} from "./session.service";
+
 const _ = require('lodash/core');
-const responsive = require('../modules/responsive');
-const Tour = require('bootstrap-tour');
+//const responsive = require('../modules/responsive');
+//const Tour = require('bootstrap-tour');
 
-$.fn.tooltip.Constructor.DEFAULTS.whiteList.button = ['data-role'];
+//(<any>$.fn).tooltip.Constructor.DEFAULTS.whiteList.button = ['data-role'];
 
-angular.module('inboxServices').service('Tour',
+@Injectable({
+  providedIn: 'root'
+})
+export class TourService {
+
+  constructor(
+    private analyticsModulesService: AnalyticsModulesService,
+    private authService: AuthService,
+    private feedbackService: FeedbackService,
+    private sessionService: SessionService,
+    private translateService: TranslateService,
+  ) { }
+
+  getMessagesTour() {
+    return this.authService.has('can_view_messages_tab')
+      .then(canView => {
+        return canView && {
+          order: 0,
+          id: 'messages',
+          icon: 'fa-envelope',
+          name: 'Messages'
+        };
+      });
+  }
+
+  getTasksTour() {
+    if (this.sessionService.isOnlineOnly()) {
+      return;
+    }
+    return this.authService.has('can_view_tasks_tab')
+      .then(canView => {
+        return canView && {
+          order: 1,
+          id: 'tasks',
+          icon: 'fa-flag',
+          name: 'Tasks'
+        };
+      });
+  }
+
+  getReportsTour() {
+    return this.authService.has('can_view_reports_tab')
+      .then(canView => {
+        return canView && {
+          order: 2,
+          id: 'reports',
+          icon: 'fa-list-alt',
+          name: 'Reports'
+        };
+      });
+  }
+
+  getContactsTour() {
+    return this.authService.has('can_view_contacts_tab')
+      .then(canView => {
+        return canView && {
+          order: 3,
+          id: 'contacts',
+          icon: 'fa-user',
+          name: 'Contacts'
+        };
+      });
+  }
+
+  getAnalyticsTour() {
+    return Promise.all([
+      this.authService.has('can_view_analytics'),
+      this.analyticsModulesService.get()
+    ])
+      .then(([canView]) => {
+        return canView && {
+          order: 4,
+
+          id: 'analytics',
+          icon: 'fa-bar-chart-o',
+          name: 'Analytics'
+        };
+      });
+  };
+
+  getTours() {
+    return Promise.all([
+      this.getMessagesTour(),
+      this.getTasksTour(),
+      this.getReportsTour(),
+      this.getContactsTour(),
+      this.getAnalyticsTour()
+    ])
+    .then(results => _.compact(results));
+  }
+}
+
+/*angular.module('inboxServices').service('Tour',
   function(
     $log,
     $q,
@@ -597,3 +696,4 @@ angular.module('inboxServices').service('Tour',
     };
   }
 );
+*/

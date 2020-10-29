@@ -13,6 +13,7 @@ import { SendMessageComponent } from './send-message/send-message.component';
 import { DeleteDocConfirmComponent } from './delete-doc-confirm/delete-doc-confirm.component';
 import { UpdatePasswordComponent } from './edit-user/update-password.component';
 import { EditUserSettingsComponent } from './edit-user/edit-user-settings.component';
+import {TourSelectComponent} from './tour/tour-select.component';
 
 
 @NgModule({
@@ -26,6 +27,7 @@ import { EditUserSettingsComponent } from './edit-user/edit-user-settings.compon
     DeleteDocConfirmComponent,
     UpdatePasswordComponent,
     EditUserSettingsComponent,
+    TourSelectComponent,
   ],
   imports: [
     CommonModule,
@@ -39,6 +41,7 @@ import { EditUserSettingsComponent } from './edit-user/edit-user-settings.compon
     FeedbackComponent,
     UpdatePasswordComponent,
     EditUserSettingsComponent,
+    TourSelectComponent,
   ]
 })
 export class ModalsModule { }
